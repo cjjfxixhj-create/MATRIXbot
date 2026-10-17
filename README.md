@@ -6,8 +6,10 @@
 ## نصب
 
 ```bash
-pip install requests
+pip install git+https://github.com/cjjfxixhj-create/MATRIXbot.git
 ```
+
+(`requests` خودش با همین دستور نصب میشه.)
 
 ## شروع سریع
 
