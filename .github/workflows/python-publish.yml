@@ -1,0 +1,69 @@
+name: MATRIXbot CI/CD
+
+on:
+  push:
+    branches: [ main ]
+    tags:
+      - 'v*'
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: read
+
+jobs:
+  # تست خودکار روی push و pull request
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.8", "3.9", "3.10", "3.11"]
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: نصب پایتون
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: نصب وابستگی‌ها
+      run: |
+        python -m pip install --upgrade pip
+        pip install requests
+        if [ -f test_matrixbot.py ]; then pip install pytest; fi
+
+    - name: اجرای تست‌ها
+      env:
+        MATRIX_BOT_TOKEN: ${{ secrets.MATRIX_BOT_TOKEN }}
+      run: |
+        if [ -f test_matrixbot.py ]; then
+          python -m pytest test_matrixbot.py -v
+        else
+          echo "فایل تست پیدا نشد، رد می‌شود."
+        fi
+
+  # انتشار روی PyPI فقط وقتی تگ v* push شود
+  deploy:
+    needs: test
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: نصب پایتون
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.11"
+
+    - name: نصب ابزار build
+      run: python -m pip install --upgrade pip build
+
+    - name: ساخت پکیج
+      run: python -m build
+
+    - name: انتشار در PyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
