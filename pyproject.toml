@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "matrixbook"
+version = "1.0.0"
+description = "Python client library for the Matrix messenger Bot API (Telegram-compatible)"
+readme = "README.md"
+requires-python = ">=3.8"
+license = { text = "MIT" }
+authors = [{ name = "cjjfxixhj-create" }]
+keywords = ["matrix", "bot", "messenger", "bot-api", "telegram"]
+dependencies = ["requests>=2.25"]
+
+[project.urls]
+Homepage = "https://github.com/cjjfxixhj-create/MATRIXbot"
+Repository = "https://github.com/cjjfxixhj-create/MATRIXbot"
+
+[tool.setuptools]
+py-modules = ["matrixbot"]
